@@ -23,7 +23,8 @@ def parse_arguments() :
     parser = argparse.ArgumentParser(description='Argparse')
 
     parser.add_argument('--batch_size', type=int, default=128)
-    parser.add_argument('--model_dir', type=str, default='../model/baseline')
+
+    parser.add_argument('--model_dir', type=str, default='../best_model')
     parser.add_argument('--save', type=bool, default=True)
     parser.add_argument('--dev_dir', type=str, default="../data/dev.csv")
     parser.add_argument('--output_dir', type=str, default='../output.csv')
