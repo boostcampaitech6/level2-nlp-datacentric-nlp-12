@@ -8,13 +8,25 @@ import torch
 from torch.utils.data import Dataset
 from transformers import AutoModelForSequenceClassification, AutoTokenizer
 
+import evaluate
+
+
+def compute_adjusted_f1(pred, target) :
+    f1 = evaluate.load('f1')
+    metric = f1.compute(predictions=pred, references=target, average='macro')
+    metric["adjusted-f1"] = round((round(metric["f1"],4)+0.972)/2.25, 4)
+    return metric
+
 
 def parse_arguments() :
         
     parser = argparse.ArgumentParser(description='Argparse')
 
     parser.add_argument('--batch_size', type=int, default=128)
+
     parser.add_argument('--model_dir', type=str, default='../best_model')
+    parser.add_argument('--save', type=bool, default=True)
+    parser.add_argument('--dev_dir', type=str, default="../data/dev.csv")
     parser.add_argument('--output_dir', type=str, default='../output.csv')
     
     args = parser.parse_args()
@@ -51,4 +63,10 @@ for batch in tqdm(test_batches):
         preds.extend(pred)
 
 dataset_test['target'] = preds
-dataset_test.to_csv(args.output_dir, index=False)
+
+# metric 보여주기
+dataset_dev = pd.read_csv(args.dev_dir)
+print("Macro F1 Score : {}".format(compute_adjusted_f1(preds, dataset_dev["target"].to_list())))
+
+if args.save :
+    dataset_test.to_csv(args.output_dir, index=False)
