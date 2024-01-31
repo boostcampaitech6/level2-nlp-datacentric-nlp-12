@@ -23,7 +23,7 @@ def parse_arguments() :
 
   parser.add_argument('--batch_size', type=int, default=128)
   parser.add_argument('--target_dir', type=str, default='../data/train.csv')
-  parser.add_argument('--output_dir', type=str, default='../relabel.csv')
+  parser.add_argument('--output_dir', type=str, default='../data/relabel.csv')
   
   args = parser.parse_args()
 
