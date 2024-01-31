@@ -22,8 +22,8 @@ def parse_arguments() :
   parser = argparse.ArgumentParser(description='Argparse')
 
   parser.add_argument('--batch_size', type=int, default=128)
-  parser.add_argument('--target_dir', type=str, default='../data/train.csv')
-  parser.add_argument('--output_dir', type=str, default='../data/relabel.csv')
+  parser.add_argument('--target_dir', type=str, default='../../data/train.csv')
+  parser.add_argument('--output_dir', type=str, default='../../data/relabel.csv')
   
   args = parser.parse_args()
 
@@ -33,6 +33,7 @@ def parse_arguments() :
 args = parse_arguments()
 
 df_org = pd.read_csv(args.target_dir)
+df_org["target"] = 0
 
 DEVICE = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
 DEVICE
@@ -74,6 +75,7 @@ df_org['target_final'] = df_org.apply(check_same, axis=1)
 df_sure = df_org[df_org['target_final'] != -1]
 df_sure.drop('target', axis=1, inplace=True)
 df_sure.rename(columns={'target_final': 'target'}, inplace=True)
+df_sure = df_sure[["text", "target"]]
 
 # 저장
 df_sure.to_csv(args.output_dir, index=False)
