@@ -6,8 +6,8 @@ def parse_arguments() :
     
     parser = argparse.ArgumentParser(description='Argparse')
 
-    parser.add_argument('--target_dir', type=str, default='../data/relabel.csv')
-    parser.add_argument('--output_dir', type=str, default='../data/balanced.csv')
+    parser.add_argument('--target_dir', type=str, default='../../data/relabel.csv')
+    parser.add_argument('--output_dir', type=str, default='../../data/balanced.csv')
     parser.add_argument('--data_per_label', type=int, default=-1)
     parser.add_argument('--seed', type=int, default=486)
     

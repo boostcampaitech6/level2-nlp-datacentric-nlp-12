@@ -19,10 +19,12 @@ def parse_arguments() :
     
     parser = argparse.ArgumentParser(description='Argparse')
 
-    parser.add_argument('--target_dir', type=str, default='../data/balanced.csv')
-    parser.add_argument('--output_dir', type=str, default='../data/g2ped.csv')
+    parser.add_argument('--target_dir', type=str, default='../../data/balanced.csv')
+    parser.add_argument('--output_dir', type=str, default='../../data/g2ped.csv')
     parser.add_argument('--g2p_ratio', type=float, default=0.1)
-    parser.add_argument('--train_concat', type=str, default='../data/train_relabel.csv')
+    
+    parser.add_argument('--train_concat', type=bool, default=True)
+    parser.add_argument('--train_concat_dir', type=str, default='../../data/train_relabel.csv')
     
     args = parser.parse_args()
 
@@ -40,10 +42,8 @@ apply_g2p(df_g2p, args.g2p_ratio)
 joined_df = pd.merge(df_org, df_g2p, on='text', how='inner')
 print("Total {} data was G2Ped out of {} data.".format( len(df_org) - len(joined_df), len(df_org) ) )
 
-df_g2p = df_g2p[["text", "target"]]
-
 if args.train_concat :
-    train_relabel = pd.read_csv(args.train_concat)
+    train_relabel = pd.read_csv(args.train_concat_dir)
     train_relabel = train_relabel[["text", "target"]]
     df_g2p = pd.concat([df_g2p, train_relabel], axis=0)
 
