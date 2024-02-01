@@ -51,12 +51,13 @@ def cleaning(df):
     for idx, sentence in enumerate(sentences):
         if type(sentence) != str:
             drop_list.append(idx)
-        elif len(sentence) < 10:
+        elif len(sentence) < 10 or len(sentence) > 256:
             drop_list.append(idx)
         elif 'input' in sentence or 'output' in sentence:
             drop_list.append(idx)
     new_df = df.drop(drop_list)
     new_df = new_df.drop_duplicates(['text'])
+    new_df['text'] = [sentence.strip().replace('\n', ' ').replace('"', ' ') for sentence in new_df['text'].tolist()]
     print('after cleaning:', len(new_df))
     return new_df
 
