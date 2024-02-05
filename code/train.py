@@ -49,8 +49,8 @@ def compute_metrics(eval_pred):
 def parse_arguments() :
         
     parser = argparse.ArgumentParser(description='Argparse')
-    parser.add_argument('--train_name', type=str, default="train.csv")
-    parser.add_argument('--batch_size', type=int, default=32)
+    parser.add_argument('--train_dir', type=str, default="../data/train.csv")
+    parser.add_argument('--dev_dir', type=str, default="../data/dev.csv")
     parser.add_argument('--save_total_limit', type=int, default=5)
     parser.add_argument('--eval_steps', type=int, default=100)
     parser.add_argument('--dev_ratio', type=float, default=0.3)
@@ -87,9 +87,9 @@ model = AutoModelForSequenceClassification.from_pretrained(model_name, num_label
 tokenizer = AutoTokenizer.from_pretrained(model_name)
 
 
-data = pd.read_csv(os.path.join(DATA_DIR, args.train_name))
-dataset_train, dataset_valid = train_test_split(data, test_size=args.dev_ratio, stratify=data['target'],random_state=SEED)
-
+dataset_train = pd.read_csv(args.train_dir)
+dataset_valid = pd.read_csv(args.dev_dir)
+# dataset_train, dataset_valid = train_test_split(data, test_size=args.dev_ratio, stratify=data['target'],random_state=SEED)
 
 data_train = BERTDataset(dataset_train, tokenizer)
 data_valid = BERTDataset(dataset_valid, tokenizer)
@@ -119,8 +119,8 @@ training_args = TrainingArguments(
     adam_epsilon=1e-08,
     weight_decay=0.01,
     lr_scheduler_type='linear',
-    per_device_train_batch_size=args.batch_size,
-    per_device_eval_batch_size=args.batch_size,
+    per_device_train_batch_size=32,
+    per_device_eval_batch_size=32,
     num_train_epochs=2,
     load_best_model_at_end=True,
     metric_for_best_model='eval_f1',
